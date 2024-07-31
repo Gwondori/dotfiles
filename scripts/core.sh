@@ -466,4 +466,4 @@ else
 fi;
 
 ## End of core.sh
-echo $NC
+echo -e "${NC}"
