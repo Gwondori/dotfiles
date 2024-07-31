@@ -379,6 +379,12 @@ print_i "-------------------------------------";
 print_i "- Current OS: $OS                   -";
 print_i "-------------------------------------";
 
+## Bash Completion Setting
+set_completion;
+
+print_i "- Setup bash completion successfully!-";
+print_i "-------------------------------------";
+
 ## Alias Setting
 set_my_alias;
 
