@@ -465,3 +465,5 @@ else
 	print_i "-------------------------------------";
 fi;
 
+## End of core.sh
+echo $NC
