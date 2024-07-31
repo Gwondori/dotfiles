@@ -2,6 +2,7 @@
 
 TOP_DIR=$(cd $(dirname $0) && pwd);
 PATH_NVIM_CONFIG="";
+CURRENT_SHELL=$(echo $SHELL | awk -F '/' '{print $NF}');
 
 OS="";
 SLIENT_MODE=0;
@@ -346,6 +347,20 @@ function set_my_alias() {
 	alias vimdiff='nvim -d '
 	alias mysql='mysql --defaults-file=$HOME/.mysql_cred '
 	alias mysqldump='mysqldump --defaults-file=$HOME/.mysql_cred '
+}
+
+function set_completion() {
+	if [ "$OS" = "Mac OS" ] || [ "$OS" = "Linux" ]; then
+		if ! shopt -oq posix; then
+			if [ -f /usr/share/bash-completion/bash_completion ]; then
+				. /usr/share/bash-completion/bash_completion
+			elif [ -f /etc/bash_completion ]; then
+				. /etc/bash_completion
+			fi
+		fi
+	else
+		print_e "[Setup] Bash completion is only supported on Mac OS and Linux";
+	fi;
 }
 
 ## -------------------------------------
