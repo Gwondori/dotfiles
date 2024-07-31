@@ -212,6 +212,8 @@ function setup_nvm() {
 	else
 		print_e "[Setup] NVM is not installed";
 	fi;
+
+	check_installed_nvm;
 }
 
 function check_installed_pyenv() {
@@ -256,6 +258,8 @@ function setup_pyenv() {
 	else
 		print_e "[Setup] Pyenv is not installed";
 	fi;
+
+	check_installed_pyenv;
 }
 
 function check_installed_jenv() {
@@ -300,6 +304,8 @@ function setup_jenv() {
 	else
 		print_e "[Setup] Jenv is not installed";
 	fi;
+
+	check_installed_jenv;
 }
 
 function set_my_alias() {
@@ -353,9 +359,15 @@ fi;
 
 setup_brew;
 
-print_i "- Setup brew successfully!          -";
-print_i "- Homebrew prefix: $HOMEBREW_PREFIX  -";
-print_i "-------------------------------------";
+if [ $EXISTS_BREW -eq 0 ]; then
+	print_i "- Fail to setup brew!                -";
+	print_i "- Homebrew prefix: $HOMEBREW_PREFIX  -";
+	print_i "-------------------------------------";
+else
+	print_i "- Setup brew successfully!           -";
+	print_i "- Homebrew prefix: $HOMEBREW_PREFIX  -";
+	print_i "-------------------------------------";
+fi;
 
 ## NVM Setting
 check_installed_nvm;
@@ -366,8 +378,15 @@ fi;
 
 setup_nvm;
 
-print_i "- Setup nvm successfully!           -";
-print_i "-------------------------------------";
+if [ $EXISTS_NVM -eq 0 ]; then
+	print_i "- Fail to setup nvm!                 -";
+	print_i "- NVM_DIR: $NVM_DIR                  -";
+	print_i "-------------------------------------";
+else
+	print_i "- NVM_DIR: $NVM_DIR                  -";
+	print_i "- NVM version: $(nvm --version)      -";
+	print_i "-------------------------------------";
+fi;
 
 ## Pyenv Setting
 check_installed_pyenv;
@@ -378,8 +397,14 @@ fi;
 
 setup_pyenv;
 
-print_i "- Setup pyenv successfully!         -";
-print_i "-------------------------------------";
+if [ $EXISTS_PYENV -eq 0 ]; then
+	print_i "- Fail to setup pyenv!               -";
+	print_i "-------------------------------------";
+else
+	print_i "- Pyenv version: $(pyenv --version)  -";
+	print_i "- Pyenv root: $PYENV_ROOT            -";
+	print_i "-------------------------------------";
+fi;
 
 ## Jenv Setting
 check_installed_jenv;
@@ -390,5 +415,12 @@ fi;
 
 setup_jenv;
 
-print_i "- Setup jenv successfully!          -";
-print_i "-------------------------------------";
+if [ $EXISTS_JENV -eq 0 ]; then
+	print_i "- Fail to setup jenv!                -";
+	print_i "-------------------------------------";
+else
+	print_i "- Jenv version: $(jenv --version)    -";
+	print_i "- Jenv root: $HOME/.jenv             -";
+	print_i "-------------------------------------";
+fi;
+
