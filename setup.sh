@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-OS=""
-WORK_STORAGE_UUID=""
-IS_MOUNTED_WORK_STORAGE=0
-EXISTS_NVM=0
-EXISTS_PYENV=0
-EXISTS_JENV=0
+OS="";
+SLIENT_MODE=1;
+DEBUG_MODE=0;
+WORK_STORAGE_UUID="";
+IS_MOUNTED_WORK_STORAGE=0;
+EXISTS_NVM=0;
+EXISTS_PYENV=0;
+EXISTS_JENV=0;
 
 function print_i() {
 	RED="\033[0;31m";
@@ -13,7 +15,16 @@ function print_i() {
 	GREEN="\033[0;32m";
 	BLUE="\033[0;34m";
 	NC="\033[0m";
-	echo -e "${BLUE}[I]($LINENO): $@";
+
+	if [ $SLIENT_MODE -eq 1 ]; then
+		return;
+	fi;
+
+	if [ $DEBUG_MODE -eq 1 ]; then
+		echo -e "${BLUE}[I]($LINENO) - $@";
+	else
+		echo -e "${BLUE}$@";
+	fi;
 }
 
 function print_w() {
@@ -22,7 +33,16 @@ function print_w() {
 	GREEN="\033[0;32m";
 	BLUE="\033[0;34m";
 	NC="\033[0m";
-	echo -e "${YELLOW}[W]($LINENO): $@";
+
+	if [ $SLIENT_MODE -eq 1 ]; then
+		return;
+	fi;
+
+	if [ $DEBUG_MODE -eq 1 ]; then
+		echo -e "${YELLOW}[W]($LINENO) - $@";
+	else
+		echo -e "${YELLOW}$@";
+	fi;
 }
 
 function print_e() {
@@ -31,7 +51,16 @@ function print_e() {
 	GREEN="\033[0;32m";
 	BLUE="\033[0;34m";
 	NC="\033[0m";
-	echo -e "${RED}[E]($LINENO): $@";
+
+	if [ $SLIENT_MODE -eq 1 ]; then
+		return;
+	fi;
+
+	if [ $DEBUG_MODE -eq 1 ]; then
+		echo -e "${RED}[E]($LINENO) - $@";
+	else
+		echo -e "${RED}$@";
+	fi;
 }
 
 function print_d() {
@@ -40,7 +69,12 @@ function print_d() {
 	GREEN="\033[0;32m";
 	BLUE="\033[0;34m";
 	NC="\033[0m";
-	echo -e "${GREEN}[D]($LINENO): $@";
+
+	if [ $DEBUG_MODE -eq 1 ]; then
+		echo -e "${GREEN}[D]($LINENO) - $@";
+	else
+		echo -e "${GREEN}$@";
+	fi;
 }
 
 function check_installed_brew() {
@@ -124,6 +158,10 @@ function install_nvm() {
 function setup_nvm() {
 	if [ $EXISTS_NVM -eq 1 ]; then
 		if [ "$OS" = "Mac OS" ]; then
+			if [ ! -d "$HOME/.nvm" ]; then
+				mkdir "$HOME/.nvm";
+			fi;
+
 			export NVM_DIR="$HOME/.nvm"
 			[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" # This loads nvm
 			[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
@@ -252,9 +290,55 @@ if [ "$(uname)" = "Darwin" ]; then
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
 	OS="Linux";
 elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW32_NT" ]; then
-	echo "Windows is not supported";
+	print_e "Windows is not supported";
 	exit 1;
 fi
 
-echo "OS: $OS"
+print_i "========================================";
+print_i "Current OS: $OS"
+print_i "========================================";
 
+check_installed_brew;
+
+if [ $EXISTS_BREW -eq 0 ]; then
+	install_brew;
+fi;
+
+setup_brew;
+
+print_i "Setup brew successfully!";
+print_i "Homebrew prefix: $HOMEBREW_PREFIX";
+print_i "========================================";
+
+check_installed_nvm;
+
+if [ $EXISTS_NVM -eq 0 ]; then
+	install_nvm;
+fi;
+
+setup_nvm;
+
+print_i "Setup nvm successfully!";
+print_i "========================================";
+
+check_installed_pyenv;
+
+if [ $EXISTS_PYENV -eq 0 ]; then
+	install_pyenv;
+fi;
+
+setup_pyenv;
+
+print_i "Setup pyenv successfully!";
+print_i "========================================";
+
+check_installed_jenv;
+
+if [ $EXISTS_JENV -eq 0 ]; then
+	install_jenv;
+fi;
+
+setup_jenv;
+
+print_i "Setup jenv successfully!";
+print_i "========================================";
