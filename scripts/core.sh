@@ -1,21 +1,27 @@
 #!/usr/bin/env bash
 
+TOP_DIR=$(cd $(dirname $0) && pwd);
+PATH_NVIM_CONFIG="";
+
 OS="";
-SLIENT_MODE=1;
+SLIENT_MODE=0;
 DEBUG_MODE=0;
 WORK_STORAGE_UUID="";
 IS_MOUNTED_WORK_STORAGE=0;
+EXISTS_BREW=0;
+EXISTS_CURL=0;
+EXISTS_GIT=0;
 EXISTS_NVM=0;
 EXISTS_PYENV=0;
 EXISTS_JENV=0;
 
-function print_i() {
-	RED="\033[0;31m";
-	YELLOW="\033[0;33m";
-	GREEN="\033[0;32m";
-	BLUE="\033[0;34m";
-	NC="\033[0m";
+RED="\033[0;31m";
+YELLOW="\033[0;33m";
+GREEN="\033[0;32m";
+BLUE="\033[0;34m";
+NC="\033[0m";
 
+function print_i() {
 	if [ $SLIENT_MODE -eq 1 ]; then
 		return;
 	fi;
@@ -28,12 +34,6 @@ function print_i() {
 }
 
 function print_w() {
-	RED="\033[0;31m";
-	YELLOW="\033[0;33m";
-	GREEN="\033[0;32m";
-	BLUE="\033[0;34m";
-	NC="\033[0m";
-
 	if [ $SLIENT_MODE -eq 1 ]; then
 		return;
 	fi;
@@ -46,12 +46,6 @@ function print_w() {
 }
 
 function print_e() {
-	RED="\033[0;31m";
-	YELLOW="\033[0;33m";
-	GREEN="\033[0;32m";
-	BLUE="\033[0;34m";
-	NC="\033[0m";
-
 	if [ $SLIENT_MODE -eq 1 ]; then
 		return;
 	fi;
@@ -64,12 +58,6 @@ function print_e() {
 }
 
 function print_d() {
-	RED="\033[0;31m";
-	YELLOW="\033[0;33m";
-	GREEN="\033[0;32m";
-	BLUE="\033[0;34m";
-	NC="\033[0m";
-
 	if [ $DEBUG_MODE -eq 1 ]; then
 		echo -e "${GREEN}[D]($LINENO) - $@";
 	else
@@ -116,6 +104,56 @@ function setup_brew() {
 	else
 		print_e "[Setup] Brew is not installed";
 	fi;
+}
+
+function check_installed_curl() {
+	if [ -x "$(command -v curl)" ]; then
+		EXISTS_CURL=1;
+	else
+		print_w "[Checked] Curl is not installed";
+		EXISTS_CURL=0;
+	fi;
+}
+
+function install_curl() {
+	if [ $EXISTS_CURL -eq 0 ]; then
+		if [ "$OS" = "Mac OS" ]; then
+			brew install curl;
+		elif [ "$OS" = "Linux" ]; then
+			sudo apt install curl;
+		else
+			print_e "[Install] curl is only supported on Mac OS and Linux";
+		fi;
+	else
+		print_w "[Install] curl is already installed";
+	fi;
+
+	check_installed_curl;
+}
+
+function check_installed_git() {
+	if [ -x "$(command -v git)" ]; then
+		EXISTS_GIT=1;
+	else
+		print_w "[Checked] Git is not installed";
+		EXISTS_GIT=0;
+	fi;
+}
+
+function install_git() {
+	if [ $EXISTS_GIT -eq 0 ]; then
+		if [ "$OS" = "Mac OS" ]; then
+			brew install git;
+		elif [ "$OS" = "Linux" ]; then
+			sudo apt install git;
+		else
+			print_e "[Install] Git is only supported on Mac OS and Linux";
+		fi;
+	else
+		print_w "[Install] Git is already installed";
+	fi;
+
+	check_installed_git;
 }
 
 function check_installed_nvm() {
@@ -284,7 +322,9 @@ function set_my_alias() {
 	alias mysqldump='mysqldump --defaults-file=$HOME/.mysql_cred '
 }
 
-# Check OS
+## -------------------------------------
+
+## Check OS
 if [ "$(uname)" = "Darwin" ]; then
 	OS="Mac OS";
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
@@ -294,10 +334,17 @@ elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW32_NT" ]; then
 	exit 1;
 fi
 
-print_i "========================================";
-print_i "Current OS: $OS"
-print_i "========================================";
+print_i "-------------------------------------";
+print_i "- Current OS: $OS                   -";
+print_i "-------------------------------------";
 
+## Alias Setting
+set_my_alias;
+
+print_i "- Setup my alias successfully!      -";
+print_i "-------------------------------------";
+
+## Homebrew Setting
 check_installed_brew;
 
 if [ $EXISTS_BREW -eq 0 ]; then
@@ -306,10 +353,11 @@ fi;
 
 setup_brew;
 
-print_i "Setup brew successfully!";
-print_i "Homebrew prefix: $HOMEBREW_PREFIX";
-print_i "========================================";
+print_i "- Setup brew successfully!          -";
+print_i "- Homebrew prefix: $HOMEBREW_PREFIX  -";
+print_i "-------------------------------------";
 
+## NVM Setting
 check_installed_nvm;
 
 if [ $EXISTS_NVM -eq 0 ]; then
@@ -318,9 +366,10 @@ fi;
 
 setup_nvm;
 
-print_i "Setup nvm successfully!";
-print_i "========================================";
+print_i "- Setup nvm successfully!           -";
+print_i "-------------------------------------";
 
+## Pyenv Setting
 check_installed_pyenv;
 
 if [ $EXISTS_PYENV -eq 0 ]; then
@@ -329,9 +378,10 @@ fi;
 
 setup_pyenv;
 
-print_i "Setup pyenv successfully!";
-print_i "========================================";
+print_i "- Setup pyenv successfully!         -";
+print_i "-------------------------------------";
 
+## Jenv Setting
 check_installed_jenv;
 
 if [ $EXISTS_JENV -eq 0 ]; then
@@ -340,5 +390,5 @@ fi;
 
 setup_jenv;
 
-print_i "Setup jenv successfully!";
-print_i "========================================";
+print_i "- Setup jenv successfully!          -";
+print_i "-------------------------------------";
