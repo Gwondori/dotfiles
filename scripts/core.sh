@@ -80,14 +80,14 @@ function check_installed_brew() {
 }
 
 function install_brew() {
-	if [ $EXISTS_BREW -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ $EXISTS_BREW -eq 0 ]; then
 			/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";
 		else
-			print_e "[Install] Brew is only supported on Mac OS";
+			print_w "[Install] Brew is already installed";
 		fi;
 	else
-		print_w "[Install] Brew is already installed";
+		print_e "[Install] Brew is only supported on Mac OS";
 	fi;
 
 	# Update
@@ -116,16 +116,20 @@ function check_installed_curl() {
 }
 
 function install_curl() {
-	if [ $EXISTS_CURL -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ $EXISTS_CURL -eq 0 ]; then
 			brew install curl;
-		elif [ "$OS" = "Linux" ]; then
+		else
+			print_w "[Install] curl is already installed";
+		fi;
+	elif [ "$OS" = "Linux" ]; then
+		if [ $EXISTS_CURL -eq 0 ]; then
 			sudo apt install curl;
 		else
-			print_e "[Install] curl is only supported on Mac OS and Linux";
+			print_w "[Install] curl is already installed";
 		fi;
 	else
-		print_w "[Install] curl is already installed";
+		print_e "[Install] curl is only supported on Mac OS and Linux";
 	fi;
 
 	check_installed_curl;
@@ -141,16 +145,20 @@ function check_installed_git() {
 }
 
 function install_git() {
-	if [ $EXISTS_GIT -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ $EXISTS_BREW -eq 1 ] && [ $EXISTS_GIT -eq 0 ]; then
 			brew install git;
-		elif [ "$OS" = "Linux" ]; then
+		else
+			print_w "[Install] Git is already installed";
+		fi;
+	elif [ "$OS" = "Linux" ]; then
+		if [ $EXISTS_GIT -eq 0 ]; then
 			sudo apt install git;
 		else
-			print_e "[Install] Git is only supported on Mac OS and Linux";
+			print_w "[Install] Git is already installed";
 		fi;
 	else
-		print_w "[Install] Git is already installed";
+		print_e "[Install] Git is only supported on Mac OS and Linux";
 	fi;
 
 	check_installed_git;
@@ -178,16 +186,20 @@ function check_installed_nvm() {
 }
 
 function install_nvm() {
-	if [ $EXISTS_BREW -ne 0 ] && [ $EXISTS_NVM -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ $EXISTS_BREW -ne 0 ] && [ $EXISTS_NVM -eq 0 ]; then
 			brew install nvm;
-		elif [ "$OS" = "Linux" ]; then
+		else
+			print_e "[Install] NVM is already installed";
+		fi;
+	elif [ "$OS" = "Linux" ]; then
+		if [ $EXISTS_NVM -eq 0 ]; then
 			curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 		else
-			print_e "[Install] NVM is only supported on Mac OS and Linux";
+			print_e "[Install] NVM is already installed";
 		fi;
 	else
-		print_e "[Install] NVM is already installed";
+		print_e "[Install] NVM is only supported on Mac OS and Linux";
 	fi;
 
 	check_installed_nvm;
@@ -231,16 +243,20 @@ function check_installed_pyenv() {
 }
 
 function install_pyenv() {
-	if [ "$EXISTS_BREW" -eq 1 ] && [ "$EXISTS_PYENV" -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ "$EXISTS_BREW" -eq 1 ] && [ "$EXISTS_PYENV" -eq 0 ]; then
 			brew install pyenv;
-		elif [ "$OS" = "Linux" ]; then
+		else
+			print_w "[Install] Pyenv is already installed";
+		fi;
+	elif [ "$OS" = "Linux" ]; then
+		if [ "$EXISTS_PYENV" -eq 0 ]; then
 			curl https://pyenv.run | bash
 		else
-			print_e "[Install] Pyenv is only supported on Mac OS and Linux";
+			print_w "[Install] Pyenv is already installed";
 		fi;
 	else
-		print_e "[Install] Pyenv is already installed";
+		print_e "[Install] Pyenv is only supported on Mac OS and Linux";
 	fi;
 
 	check_installed_pyenv;
@@ -277,16 +293,20 @@ function check_installed_jenv() {
 }
 
 function install_jenv() {
-	if [ "$EXISTS_BREW" -eq 1 ] && [ "$EXISTS_JENV" -eq 0 ]; then
-		if [ "$OS" = "Mac OS" ]; then
+	if [ "$OS" = "Mac OS" ]; then
+		if [ "$EXISTS_BREW" -eq 1 ] && [ "$EXISTS_JENV" -eq 0 ]; then
 			brew install jenv;
-		elif [ "$OS" = "Linux" ]; then
+		else
+			print_w "[Install] Jenv is already installed";
+		fi;
+	elif [ "$OS" = "Linux" ]; then
+		if [ "$EXISTS_JENV" -eq 0 ]; then
 			git clone https://github.com/jenv/jenv.git ~/.jenv;
 		else
-			print_e "[Install] Jenv is only supported on Mac OS and Linux";
+			print_w "[Install] Jenv is already installed";
 		fi;
 	else
-		print_e "[Install] Jenv is already installed";
+		print_e "[Install] Jenv is only supported on Mac OS and Linux";
 	fi;
 
 	check_installed_jenv;
