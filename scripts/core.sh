@@ -67,7 +67,7 @@ function print_d() {
 
 function check_installed_brew() {
 	if [ "$OS" = "Mac OS" ]; then
-		if [ -x "$(command -v brew)" ]; then
+		if [[ -x "$(command -v brew)" ]]; then
 			EXISTS_BREW=1;
 		else
 			print_w "[Checked] Brew is not installed";
@@ -107,7 +107,7 @@ function setup_brew() {
 }
 
 function check_installed_curl() {
-	if [ -x "$(command -v curl)" ]; then
+	if [[ -x "$(command -v curl)" ]]; then
 		EXISTS_CURL=1;
 	else
 		print_w "[Checked] Curl is not installed";
@@ -132,7 +132,7 @@ function install_curl() {
 }
 
 function check_installed_git() {
-	if [ -x "$(command -v git)" ]; then
+	if [[ -x "$(command -v git)" ]]; then
 		EXISTS_GIT=1;
 	else
 		print_w "[Checked] Git is not installed";
