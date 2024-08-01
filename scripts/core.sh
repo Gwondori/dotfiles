@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 TOP_DIR=$(cd $(dirname $0) && pwd);
-PATH_NVIM_CONFIG="";
 CURRENT_SHELL=$(echo $SHELL | awk -F '/' '{print $NF}');
 
 OS="";
