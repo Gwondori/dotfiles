@@ -1,0 +1,3 @@
+[submodule "config/nvim"]
+	path = config/nvim
+	url = https://Gwondori@github.com/Gwondori/dotnvim.git
