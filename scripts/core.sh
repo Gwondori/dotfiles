@@ -348,6 +348,16 @@ function set_my_alias() {
 	alias mysqldump='mysqldump --defaults-file=$HOME/.mysql_cred '
 }
 
+function set_other_env() {
+	if [ "$OS" = "Mac OS" ]; then
+		export HOMEBREW_NO_AUTO_UPDATE=1
+	elif [ "$OS" = "Linux" ]; then
+		export PS1="(\d \t)\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ ";
+	else
+		print_e "[Setup] Other environment is only supported on Mac OS and Linux";
+	fi;
+}
+
 function set_completion() {
 	if [ "$OS" = "Mac OS" ] || [ "$OS" = "Linux" ]; then
 		if ! shopt -oq posix; then
@@ -377,6 +387,8 @@ fi
 print_i "-------------------------------------";
 print_i "- Current OS: $OS                   -";
 print_i "-------------------------------------";
+
+set_other_env;
 
 ## Bash Completion Setting
 set_completion;
