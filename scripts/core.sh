@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TOP_DIR=$(cd $(dirname $0) && pwd);
+TOP_DIR="";
 CURRENT_SHELL=$(echo $SHELL | awk -F '/' '{print $NF}');
 
 OS="";
@@ -20,6 +20,16 @@ YELLOW="\033[0;33m";
 GREEN="\033[0;32m";
 BLUE="\033[0;34m";
 NC="\033[0m";
+
+function set_script_path() {
+	if [ "$OS" = "Mac OS" ]; then
+		TOP_DIR=$(cd $(dirname $0) && pwd)
+	elif [ "$OS" = "Linux" ]; then
+		TOP_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd);
+	else
+		print_e "[ENV] fail to set path for script!";
+	fi;
+}
 
 function print_i() {
 	if [ $SLIENT_MODE -eq 1 ]; then
@@ -387,6 +397,8 @@ fi
 print_i "-------------------------------------";
 print_i "- Current OS: $OS                   -";
 print_i "-------------------------------------";
+
+set_script_path;
 
 set_other_env;
 
