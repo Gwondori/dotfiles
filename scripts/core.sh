@@ -4,7 +4,7 @@ TOP_DIR="";
 CURRENT_SHELL=$(echo $SHELL | awk -F '/' '{print $NF}');
 
 OS="";
-SLIENT_MODE=0;
+SLIENT_MODE=1;
 DEBUG_MODE=0;
 WORK_STORAGE_UUID="";
 IS_MOUNTED_WORK_STORAGE=0;
@@ -363,6 +363,9 @@ function set_other_env() {
 		export HOMEBREW_NO_AUTO_UPDATE=1
 	elif [ "$OS" = "Linux" ]; then
 		export PS1="(\d \t)\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ ";
+		export XAUTHORITY=$HOME/.Xauthority
+
+		# 한글입력기
 	else
 		print_e "[Setup] Other environment is only supported on Mac OS and Linux";
 	fi;
